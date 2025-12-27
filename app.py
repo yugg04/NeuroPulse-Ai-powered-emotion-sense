@@ -1,10 +1,7 @@
-import streamlit as st
+import os
 import pickle
 import numpy as np
-
-# ================= LOAD MODEL =================
-model = pickle.load(open("emotion_model.pkl", "rb"))
-le = pickle.load(open("label_encoder.pkl", "rb"))
+import streamlit as st
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
@@ -12,6 +9,22 @@ st.set_page_config(
     page_icon="🧠",
     layout="centered"
 )
+
+# ================= SAFE MODEL LOADING =================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+model_path = os.path.join(BASE_DIR, "emotion_model.pkl")
+le_path = os.path.join(BASE_DIR, "label_encoder.pkl")
+
+@st.cache_resource
+def load_models():
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+    with open(le_path, "rb") as f:
+        le = pickle.load(f)
+    return model, le
+
+model, le = load_models()
 
 # ================= CUSTOM CSS =================
 st.markdown("""
@@ -85,16 +98,13 @@ user_text = st.text_area(
 )
 
 # ================= BUTTON =================
-if st.markdown('<div class="predict-btn">', unsafe_allow_html=True):
-    pass
-
+st.markdown('<div class="predict-btn">', unsafe_allow_html=True)
 predict = st.button("🚀 Detect Emotion")
-
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ================= PREDICTION =================
 if predict:
-    if user_text.strip() == "":
+    if not user_text.strip():
         st.warning("Please enter some text.")
     else:
         pred = model.predict([user_text])[0]
