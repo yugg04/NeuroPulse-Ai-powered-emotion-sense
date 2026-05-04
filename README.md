@@ -108,15 +108,6 @@ streamlit run app.py
 
 ---
 
-## 🔮 Future Improvements
-
-* Upgrade to transformer models (BERT, RoBERTa)
-* Improve dataset diversity
-* Add confidence scores for predictions
-* Deploy as API for integration
-
----
-
 ## 👨‍💻 Author
 
 **Yug Khatri**
